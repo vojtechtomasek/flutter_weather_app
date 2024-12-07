@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:weather/models/city_model.dart';
 import 'package:weather/routes/app_router.dart';
-import '../../repositories/city_repository.dart';
 import 'widgets/build_city_card.dart';
 
 @RoutePage()
@@ -23,16 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: ListView(
-              children: CityRepository.getCities().map((city) => buildCityCard(context, city)).toList(),
+              children: City.cities.map((city) => buildCityCard(context, city)).toList(),
             ),
           ),
           Center(
             child: FloatingActionButton(
               onPressed: () async {
                 await context.router.push(const InputRoute());
-                setState(() {
-                  // Refresh the list 
-                });
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
