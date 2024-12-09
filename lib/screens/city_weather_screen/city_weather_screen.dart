@@ -32,7 +32,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
         cityData = updatedCity;
       });
       
-      final weather = await ApiService.fetchData(
+      final weather = await ApiService.fetchWeatherData(
         cityData.lat ?? 0,
         cityData.lon ?? 0
       );
@@ -47,53 +47,65 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(cityData.name),
-                  Text(cityData.lat?.toString() ?? ''),
-                  Text(cityData.lon?.toString() ?? ''),
-                  Text(cityData.country ?? ''),
-                  if (weatherData != null) ...[
-                    Text('Temperature: ${weatherData?.temp}°C'),
-                    Text('Feels like: ${weatherData?.feelsLike}°C'),
-                    Text('Humidity: ${weatherData?.humidity}%'),
-                    Text('Description: ${weatherData?.weatherDescription}'),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 80.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(cityData.name, style: const TextStyle(fontSize: 32)),
+                    Text(
+                      weatherData?.temp != null ? '${weatherData?.temp?.round()}°' : 'N/A',
+                      style: const TextStyle(fontSize: 48),
+                      ),
+                    Text(weatherData?.weatherDescription ?? 'N/A'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.arrow_downward),
+                        Text(weatherData?.tempMin != null ? '${weatherData?.tempMin?.round()}°' : 'N/A'),
+                        const SizedBox(width: 10),
+                        const Icon(Icons.arrow_upward),
+                        Text(weatherData?.tempMax != null ? '${weatherData?.tempMax?.round()}°' : 'N/A'),
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+                    Card(
+                      
+                    )
                   ],
+                ) 
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    child: const Icon(Icons.map, color: Colors.black),
+                    onPressed: () {
+                      context.router.push(const MapRoute());
+                    },
+                  ),
+                  FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    child: const Icon(Icons.menu, color: Colors.black),
+                    onPressed: () {
+                      context.router.replaceAll([const HomeRoute()]);
+                    },
+                  ),
                 ],
-              ) 
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  child: const Icon(Icons.map, color: Colors.black),
-                  onPressed: () {
-                    // Map button action
-                  },
-                ),
-                FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  child: const Icon(Icons.menu, color: Colors.black),
-                  onPressed: () {
-                    context.router.replaceAll([const HomeRoute()]);
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

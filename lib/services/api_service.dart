@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:weather/models/city_forecast_model.dart';
 import '../models/city_model.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  static Future<City?> fetchData(double lat, double lon) async {
-    String? apiKey = "";  // dotenv.env['OPENWEATHER_API_KEY'];
-    String? baseUrl = "http://api.openweathermap.org/data/2.5/weather"; // Changed to weather endpoint
+  static Future<City?> fetchWeatherData(double lat, double lon) async {
+    String? apiKey = dotenv.env['OPENWEATHER_API_KEY'];
+    String? baseUrl = "http://api.openweathermap.org/data/2.5/weather";
     final String apiUrl = '$baseUrl?lat=$lat&lon=$lon&appid=$apiKey&units=metric';
 
     final response = await http.get(Uri.parse(apiUrl));
@@ -35,15 +36,42 @@ class ApiService {
     return null; 
   }
 
+  static Future<CityForecast?> fetchForecastData(double lat, double lon) async {
+    String? apiKey = dotenv.env['OPENWEATHER_API_KEY'];
+    String? baseUrl = dotenv.env['OPENWEATHER_FORECAST_URL'];
+    final String apiUrl = '$baseUrl?lat=$lat&lon=$lon&appid=$apiKey';
+
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data.isNotEmpty) {
+        return CityForecast(
+          dt: data['list']['dt'] ?? '',
+          dtTxt: data['dt_txt'],
+          temp: (data['main']['temp'] as num).toDouble(),
+          feelsLike: (data['main']['feels_like'] as num).toDouble(),
+          tempMin: (data['main']['temp_min'] as num).toDouble(),
+          tempMax: (data['main']['temp_max'] as num).toDouble(),
+          pressure: (data['main']['pressure'] as num).toInt(),
+          humidity: (data['main']['humidity'] as num).toInt(),
+          weatherDescription: data['weather'][0]['description'] as String,
+          windSpeed: (data['wind']['speed'] as num).toDouble(),
+          visibility: (data['visibility'] as num).toInt(),
+          clouds: (data['clouds']['all'] as num).toInt(),
+        );
+      }
+    }
+    return null;
+  }
+
   static Future<City?> getCityWithCoordinates(String cityName) async {
-    String? apiKey = ""; // dotenv.env['OPENWEATHER_API_KEY'];
-    String? baseUrl = "http://api.openweathermap.org/geo/1.0"; // dotenv.env['OPENWEATHER_GEOCODING_URL'];
-    final String url = '$baseUrl/direct?q=$cityName&limit=1&appid=$apiKey';
+    String? apiKey = dotenv.env['OPENWEATHER_API_KEY'];
+    String? baseUrl = "http://api.openweathermap.org/geo/1.0";
+    final String apiUrl = '$baseUrl/direct?q=$cityName&limit=1&appid=$apiKey';
     
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final List data = jsonDecode(response.body);
-      print(data);
       if (data.isNotEmpty) {
         return City(
           name: cityName,

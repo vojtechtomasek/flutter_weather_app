@@ -13,6 +13,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _cityCount = City.cities.length;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_cityCount != City.cities.length) {
+      setState(() {
+        _cityCount = City.cities.length;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: FloatingActionButton(
               onPressed: () async {
                 await context.router.push(const InputRoute());
+                setState(() {});
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
