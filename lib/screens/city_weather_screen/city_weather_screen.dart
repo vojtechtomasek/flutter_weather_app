@@ -4,6 +4,8 @@ import 'package:weather/routes/app_router.dart';
 import '../../models/city_forecast_model.dart';
 import '../../models/city_model.dart';
 import '../../services/api_service.dart';
+import 'widgets/five_day_forecast.dart';
+import 'widgets/weather_parameter.dart';
 
 @RoutePage()
 class CityWeatherScreen extends StatefulWidget {
@@ -60,61 +62,71 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
           : Column(
             children: [
               Expanded(
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(weatherData?.name ?? 'N/A', style: const TextStyle(fontSize: 32)),
-                      Text(
-                        weatherData?.temp != null ? '${weatherData?.temp?.round()}°' : 'N/A',
-                        style: const TextStyle(fontSize: 48),
-                      ),
-                      Text(weatherData?.weatherDescription ?? 'N/A'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.arrow_downward),
-                          Text(weatherData?.tempMin != null ? '${weatherData?.tempMin?.round()}°' : 'N/A'),
-                          const SizedBox(width: 10),
-                          const Icon(Icons.arrow_upward),
-                          Text(weatherData?.tempMax != null ? '${weatherData?.tempMax?.round()}°' : 'N/A'),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Card(
-                        child: Container(
-                          height: 120,
-                          padding: const EdgeInsets.all(16.0),
-                          child: forecastData != null ? ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: forecastData!.length,
-                            itemBuilder: (context, index) {
-                              final forecast = forecastData![index];
-                              final time = DateTime.fromMillisecondsSinceEpoch(forecast.dt * 1000);
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${time.hour}:00',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 15),
-                                    Text(
-                                      '${forecast.temp.round()}°',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ) : const Center(child: Text('No forecast data available')),
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(weatherData?.name ?? 'N/A', style: const TextStyle(fontSize: 32)),
+                        Text(
+                          weatherData?.temp != null ? '${weatherData?.temp?.round()}°' : 'N/A',
+                          style: const TextStyle(fontSize: 48),
                         ),
-                      ),
-                    ],
+                        Text(weatherData?.weatherDescription ?? 'N/A'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.arrow_downward),
+                            Text(weatherData?.tempMin != null ? '${weatherData?.tempMin?.round()}°' : 'N/A'),
+                            const SizedBox(width: 10),
+                            const Icon(Icons.arrow_upward),
+                            Text(weatherData?.tempMax != null ? '${weatherData?.tempMax?.round()}°' : 'N/A'),
+                          ],
+                        ),
+                        const SizedBox(height: 40),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Card(
+                            child: Container(
+                              height: 120,
+                              padding: const EdgeInsets.all(16.0),
+                              child: forecastData != null ? ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: forecastData!.length,
+                                itemBuilder: (context, index) {
+                                  final forecast = forecastData![index];
+                                  final time = DateTime.fromMillisecondsSinceEpoch(forecast.dt * 1000);
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: index == forecastData!.length - 1 ? 0 : 8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${time.hour}:00',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        Text(
+                                          '${forecast.temp.round()}°',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ) : const Center(child: Text('No forecast data available')),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        FiveDayForecast(forecastData: forecastData),
+                        const SizedBox(height: 20),
+                        WeatherParameter(parameterName: "Humidity", parameterValue: weatherData?.humidity)
+
+                      ],
+                    ),
                   ),
                 ),
               ),
