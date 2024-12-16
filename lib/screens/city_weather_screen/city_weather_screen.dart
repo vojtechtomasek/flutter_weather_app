@@ -120,11 +120,30 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         FiveDayForecast(forecastData: forecastData),
-                        const SizedBox(height: 20),
-                        WeatherParameter(parameterName: "Humidity", parameterValue: weatherData?.humidity)
-
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              WeatherParameter(
+                                parameterName: "Feels like", 
+                                parameterValue: '${weatherData?.feelsLike?.round()}°',
+                                onTap: () {
+                                  print("dslajf");
+                                },),
+                              WeatherParameter(
+                                parameterName: "Humidity", 
+                                parameterValue: '${weatherData?.humidity} %',
+                                onTap: () {
+                                  print("dlsakjf");
+                                }
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
