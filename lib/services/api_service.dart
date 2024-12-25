@@ -24,9 +24,16 @@ class ApiService {
           humidity: (data['main']['humidity'] as num).toInt(),
           weatherDescription: data['weather'][0]['description'] as String,
           windSpeed: (data['wind']['speed'] as num).toDouble(),
+          windDeg: (data['wind']?['deg'] as num?)?.toInt(),
+          windGust: (data['wind']?['gust'] as num?)?.toDouble(),
           lat: lat,
           lon: lon,
           country: data['sys']['country'] as String,
+          sunRise: data['sys']['sunrise'] as int,
+          sunSet: data['sys']['sunset'] as int,
+          rain: (data['rain']?['1h'] as num?)?.toDouble(),
+          clouds: (data['clouds']?['all'] as num?)?.toInt(),
+          visibility: (data['visibility'] as num?)?.toInt(),
         );
       } catch (e) {
         print('Error parsing weather data: $e');

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/routes/app_router.dart';
 import '../../models/city_forecast_model.dart';
@@ -6,6 +7,7 @@ import '../../models/city_model.dart';
 import '../../services/api_service.dart';
 import 'widgets/five_day_forecast.dart';
 import 'widgets/weather_parameter.dart';
+import 'widgets/forecast_list.dart';
 
 @RoutePage()
 class CityWeatherScreen extends StatefulWidget {
@@ -85,61 +87,96 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                         const SizedBox(height: 40),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Card(
-                            child: Container(
-                              height: 120,
-                              padding: const EdgeInsets.all(16.0),
-                              child: forecastData != null ? ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: forecastData!.length,
-                                itemBuilder: (context, index) {
-                                  final forecast = forecastData![index];
-                                  final time = DateTime.fromMillisecondsSinceEpoch(forecast.dt * 1000);
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: index == forecastData!.length - 1 ? 0 : 8.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${time.hour}:00',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const SizedBox(height: 15),
-                                        Text(
-                                          '${forecast.temp.round()}°',
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ) : const Center(child: Text('No forecast data available')),
-                            ),
-                          ),
+                          child: forecastData != null
+                            ? ForecastList(forecastData: forecastData!)
+                            : const Text('No forecast data available'),
                         ),
                         const SizedBox(height: 10),
                         FiveDayForecast(forecastData: forecastData),
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
                             children: [
-                              WeatherParameter(
-                                parameterName: "Feels like", 
-                                parameterValue: '${weatherData?.feelsLike?.round()}°',
-                                onTap: () {
-                                  print("dslajf");
-                                },),
-                              WeatherParameter(
-                                parameterName: "Humidity", 
-                                parameterValue: '${weatherData?.humidity} %',
-                                onTap: () {
-                                  print("dlsakjf");
-                                }
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  WeatherParameter(
+                                    parameterName: "Feels like", 
+                                    parameterValue: '${weatherData?.feelsLike?.round()}°',
+                                    onTap: () {
+                                      print("dslajf");
+                                    },
+                                  ),
+                                  WeatherParameter(
+                                    parameterName: "Humidity", 
+                                    parameterValue: '${weatherData?.humidity} %',
+                                    onTap: () {
+                                      print("dlsakjf");
+                                    }
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  WeatherParameter(
+                                    parameterName: "Pressure", 
+                                    parameterValue: '${weatherData?.pressure} hPa',
+                                    onTap: () {
+                                      print("dslajf");
+                                    },
+                                  ),
+                                  WeatherParameter(
+                                    parameterName: "Wind speed", 
+                                    parameterValue: '${weatherData?.windSpeed} m/s',
+                                    onTap: () {
+                                      print("dlsakjf");
+                                    }
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  WeatherParameter(
+                                    parameterName: "Sunrise", 
+                                    parameterValue: DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(weatherData!.sunRise! * 1000).toLocal()),
+                                    onTap: () {
+                                      print('${weatherData?.sunRise}');
+                                    },
+                                    bottomText: 'Sunset ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(weatherData!.sunSet! * 1000).toLocal())}',
+                                  ),
+                                  WeatherParameter(
+                                    parameterName: "Visibility", 
+                                    parameterValue: '${weatherData?.visibility} m',
+                                    onTap: () {
+                                      print("dlsakjf");
+                                    }
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  WeatherParameter(
+                                    parameterName: "Rain", 
+                                    parameterValue: '${weatherData?.rain} mm',
+                                    onTap: () {
+                                      print("dslajf");
+                                    },
+                                  ),
+                                  WeatherParameter(
+                                    parameterName: "Clouds", 
+                                    parameterValue: '${weatherData?.clouds} %',
+                                    onTap: () {
+                                      print("dlsakjf");
+                                    }
+                                  ),
+                                ],
                               )
                             ],
                           ),

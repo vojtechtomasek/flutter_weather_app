@@ -11,8 +11,15 @@ class City {
   final int? humidity;
   final String? weatherDescription;
   final double? windSpeed;
+  final int? windDeg;
+  final double? windGust;
   final double? lat;
   final double? lon;
+  final int? sunRise;
+  final int? sunSet;
+  final double? rain;
+  final int? clouds;
+  final int? visibility;
 
   City({
     required this.name, 
@@ -25,8 +32,15 @@ class City {
     this.humidity,
     this.weatherDescription,
     this.windSpeed,
+    this.windDeg,
+    this.windGust,
     this.lat,
     this.lon,
+    this.sunRise,
+    this.sunSet,
+    this.rain,
+    this.clouds,
+    this.visibility,
   });
 
   static void addCity(City city) {

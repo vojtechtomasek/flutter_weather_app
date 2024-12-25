@@ -4,7 +4,7 @@ import 'package:weather/models/city_forecast_model.dart';
 class FiveDayForecast extends StatelessWidget {
   final List<CityForecast>? forecastData;
 
-  const FiveDayForecast({Key? key, this.forecastData}) : super(key: key);
+  const FiveDayForecast({super.key, this.forecastData});
 
   @override
   Widget build(BuildContext context) {
