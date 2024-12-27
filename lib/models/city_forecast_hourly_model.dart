@@ -11,6 +11,7 @@ class CityForecastHourlyModel {
   final double windSpeed;
   final int visibility;
   final int clouds;
+  final double rain;
 
   CityForecastHourlyModel({
     required this.dt,
@@ -25,5 +26,6 @@ class CityForecastHourlyModel {
     required this.windSpeed,
     required this.visibility,
     required this.clouds,
+    required this.rain,
   });
 }

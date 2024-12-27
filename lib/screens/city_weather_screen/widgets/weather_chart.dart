@@ -1,185 +1,181 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:weather/models/city_forecast_hourly_model.dart';
 import 'package:weather/models/city_history_model.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class WeatherChart extends StatelessWidget {
   final List<CityHistoryModel> historyData;
   final List<CityForecastHourlyModel> forecastHourlyData;
+  final String parameter;
 
   const WeatherChart({
     super.key,
     required this.historyData,
     required this.forecastHourlyData,
+    required this.parameter,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.70,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          right: 18,
-          left: 12,
-          top: 24,
-          bottom: 12,
-        ),
-        child: LineChart(
-          LineChartData(
-            gridData: FlGridData(
-              show: true,
-              drawVerticalLine: true,
-              horizontalInterval: 5,
-              verticalInterval: 1,
-              getDrawingHorizontalLine: (value) {
-                return const FlLine(
-                  color: Color(0xff37434d),
-                  strokeWidth: 1,
-                );
-              },
-              getDrawingVerticalLine: (value) {
-                return const FlLine(
-                  color: Color(0xff37434d),
-                  strokeWidth: 1,
-                );
-              },
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 30,
-                  interval: 1,
-                  getTitlesWidget: bottomTitleWidgets,
-                ),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 5,
-                  getTitlesWidget: leftTitleWidgets,
-                  reservedSize: 42,
-                ),
+    final List<Map<String, dynamic>> combinedData = _getCombinedData();
+    final List<dynamic> values = combinedData.map((data) => data['value']).toList();
+    double min = calculateMin(values.cast<double>(), 2);
+    double max = calculateMax(values.cast<double>(), 2);
+    double interval = calculateInterval(min, max, 5);
+
+    // Round min, max, and interval values to ensure they align correctly
+    min = min.roundToDouble();
+    max = max.roundToDouble();
+    interval = (interval / 1).roundToDouble(); // Ensure interval is rounded
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: LineChart(
+        LineChartData(
+          gridData: const FlGridData(show: true),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  if (value % interval == 0) {
+                    return Text(
+                      value.toStringAsFixed(0),
+                      style: const TextStyle(fontSize: 12),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+                reservedSize: 40,
+                interval: interval,
               ),
             ),
-            borderData: FlBorderData(
-              show: true,
-              border: Border.all(color: const Color(0xff37434d)),
+            bottomTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
             ),
-            minX: 0,
-            maxX: 23,
-            minY: 0,
-            maxY: 40,
-            lineBarsData: [
-              LineChartBarData(
-                spots: _getSpots(),
-                isCurved: true,
-                gradient: const LinearGradient(
-                  colors: [Color(0xff23b6e6), Color(0xff02d39a)],
-                ),
-                barWidth: 5,
-                isStrokeCapRound: true,
-                dotData: const FlDotData(
-                  show: false,
-                ),
-                belowBarData: BarAreaData(
-                  show: true,
-                  gradient: LinearGradient(
-                    colors: [
-                      const Color(0xff23b6e6).withOpacity(0.3),
-                      const Color(0xff02d39a).withOpacity(0.3),
+          ),
+          borderData: FlBorderData(
+            border: const Border(
+              left: BorderSide(color: Colors.black, width: 1),
+              bottom: BorderSide(color: Colors.black, width: 1),
+            ),
+          ),
+          minY: min,
+          maxY: max,
+          lineBarsData: [
+            LineChartBarData(
+              spots: values
+                  .asMap()
+                  .entries
+                  .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
+                  .toList(),
+              isCurved: true,
+              gradient: const LinearGradient(
+                colors: [Colors.blue, Colors.lightBlueAccent],
+              ),
+              barWidth: 2,
+            ),
+          ],
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              tooltipRoundedRadius: 8,
+              getTooltipColor: (touchedSpot) => Colors.blue,
+              getTooltipItems: (touchedSpots) {
+                return touchedSpots.map((spot) {
+                  return LineTooltipItem(
+                    '',
+                    const TextStyle(),
+                    children: [
+                      TextSpan(
+                        text: '${spot.x.toStringAsFixed(2)}\n',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                        ),
+                      ),
+                      TextSpan(
+                        text: spot.y.toStringAsFixed(2),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
-                  ),
-                ),
-              ),
-            ],
+                  );
+                }).toList();
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<FlSpot> _getSpots() {
-    final List<FlSpot> spots = [];
+  List<Map<String, dynamic>> _getCombinedData() {
+    final List<Map<String, dynamic>> combinedData = [];
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    // Add historical data spots
+    // Add historical data
     for (var data in historyData) {
-      final hour = DateTime.fromMillisecondsSinceEpoch(data.dt * 1000).hour;
-      spots.add(FlSpot(hour.toDouble(), data.temp));
+      final dateTime = DateTime.fromMillisecondsSinceEpoch(data.dt * 1000);
+      if (dateTime.isAfter(startOfDay) && dateTime.isBefore(endOfDay)) {
+        combinedData.add({
+          'time': dateTime,
+          'value': _getParameterValue(data),
+        });
+      }
     }
 
-    // Add forecast hourly data spots
+    // Add forecast hourly data
     for (var data in forecastHourlyData) {
-      final hour = DateTime.fromMillisecondsSinceEpoch(data.dt * 1000).hour;
-      spots.add(FlSpot(hour.toDouble(), data.temp));
+      final dateTime = DateTime.fromMillisecondsSinceEpoch(data.dt * 1000);
+      if (dateTime.isAfter(startOfDay) && dateTime.isBefore(endOfDay)) {
+        combinedData.add({
+          'time': dateTime,
+          'value': _getParameterValue(data),
+        });
+      }
     }
 
-    return spots;
+    return combinedData;
   }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-    );
-    Widget text;
-    switch (value.toInt()) {
-      case 0:
-        text = const Text('12 AM', style: style);
-        break;
-      case 6:
-        text = const Text('6 AM', style: style);
-        break;
-      case 12:
-        text = const Text('12 PM', style: style);
-        break;
-      case 18:
-        text = const Text('6 PM', style: style);
-        break;
+  double _getParameterValue(dynamic data) {
+    switch (parameter) {
+      case 'feels like':
+        if (data is CityHistoryModel) {
+          return data.feelsLike - 273.15;
+        }
+        return data.feelsLike;
+      case 'pressure':
+        return data.pressure.toDouble();
+      case 'humidity':
+        return data.humidity.toDouble();
+      case 'clouds':
+        return data.clouds.toDouble();
+      case 'rain':
+        return data.rain.toDouble() ?? 0.0;
       default:
-        text = const Text('', style: style);
-        break;
+        if (data is CityHistoryModel) {
+          return data.temp - 273.15;
+        }
+        return data.temp;
     }
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      child: text,
-    );
   }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
-    );
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = '0°C';
-        break;
-      case 10:
-        text = '10°C';
-        break;
-      case 20:
-        text = '20°C';
-        break;
-      case 30:
-        text = '30°C';
-        break;
-      case 40:
-        text = '40°C';
-        break;
-      default:
-        return Container();
-    }
+  double calculateMin(List<double> data, double buffer) {
+    return data.reduce((a, b) => a < b ? a : b) - buffer;
+  }
 
-    return Text(text, style: style, textAlign: TextAlign.left);
+  double calculateMax(List<double> data, double buffer) {
+    return data.reduce((a, b) => a > b ? a : b) + buffer;
+  }
+
+  double calculateInterval(double min, double max, int divisions) {
+    return ((max - min) / divisions).ceilToDouble();
   }
 }

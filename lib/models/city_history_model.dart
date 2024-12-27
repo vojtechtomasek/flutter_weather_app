@@ -4,6 +4,8 @@ class CityHistoryModel {
   final double feelsLike;
   final int pressure;
   final int humidity;
+  final int clouds;
+  final double? rain;
 
   CityHistoryModel({
     required this.dt, 
@@ -11,5 +13,7 @@ class CityHistoryModel {
     required this.feelsLike, 
     required this.pressure,
     required this.humidity,
+    required this.clouds,
+    required this.rain,
   });
 }

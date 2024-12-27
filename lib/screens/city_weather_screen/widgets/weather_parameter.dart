@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:weather/models/city_forecast_hourly_model.dart';
+import 'package:weather/models/city_history_model.dart';
+import 'package:weather/screens/city_weather_screen/widgets/weather_chart.dart';
 
 class WeatherParameter extends StatelessWidget {
   final String parameterName;
   final dynamic parameterValue;
   final VoidCallback? onTap;
   final String? bottomText;
+  final List<CityHistoryModel> historyData;
+  final List<CityForecastHourlyModel> forecastHourlyData;
 
   const WeatherParameter({
     super.key,
     required this.parameterName,
     required this.parameterValue,
-    required this.onTap,
+    required this.historyData,
+    required this.forecastHourlyData,
+    this.onTap,
     this.bottomText,
   });
 
@@ -19,12 +26,23 @@ class WeatherParameter extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.47,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return WeatherChart(
+                historyData: historyData,
+                forecastHourlyData: forecastHourlyData,
+                parameter: parameterName.toLowerCase(),
+              );
+            },
+          );
+        },
         child: SizedBox(
           height: 140,
-          child: Card( 
+          child: Card(
             child: Column(
-                children: [
+              children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
@@ -45,8 +63,9 @@ class WeatherParameter extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomLeft,
                       child: Text(
-                        bottomText!, 
-                        style: const TextStyle(color: Colors.blueGrey)),
+                        bottomText!,
+                        style: const TextStyle(color: Colors.blueGrey),
+                      ),
                     ),
                   ),
               ],

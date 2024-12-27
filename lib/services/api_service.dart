@@ -33,7 +33,7 @@ class ApiService {
           country: data['sys']['country'] as String,
           sunRise: data['sys']['sunrise'] as int,
           sunSet: data['sys']['sunset'] as int,
-          rain: (data['rain']?['1h'] as num?)?.toDouble(),
+          rain: (data['rain']?['1h'] as num?)?.toDouble() ?? 0.0,
           clouds: (data['clouds']?['all'] as num?)?.toInt(),
           visibility: (data['visibility'] as num?)?.toInt(),
         );
@@ -68,6 +68,7 @@ class ApiService {
           windSpeed: (forecastData['wind']['speed'] as num).toDouble(),
           visibility: (forecastData['visibility'] as num).toInt(),
           clouds: (forecastData['clouds']['all'] as num).toInt(),
+          rain: (forecastData['rain']?['3h'] as num?)?.toDouble() ?? 0.0,
         )).toList();
       } catch (e) {
         print('Error parsing forecast data: $e');
@@ -139,6 +140,8 @@ class ApiService {
           feelsLike: (historyData['main']['feels_like'] as num).toDouble(),
           pressure: (historyData['main']['pressure'] as num).toInt(),
           humidity: (historyData['main']['humidity'] as num).toInt(),
+          clouds: (historyData['clouds']['all'] as num).toInt(),
+          rain: (historyData['rain']?['1h'] as num?)?.toDouble() ?? 0.0,
         )).toList();
       } catch (e) {
         print('Error parsing history data: $e');

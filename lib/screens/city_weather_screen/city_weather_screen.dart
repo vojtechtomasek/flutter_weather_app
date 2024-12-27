@@ -116,16 +116,14 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                   WeatherParameter(
                                     parameterName: "Feels like", 
                                     parameterValue: '${weatherData?.feelsLike?.round()}°',
-                                    onTap: () {
-                                      print("dslajf");
-                                    },
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                   WeatherParameter(
                                     parameterName: "Humidity", 
                                     parameterValue: '${weatherData?.humidity} %',
-                                    onTap: () {
-                                      print("dlsakjf");
-                                    }
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                 ],
                               ),
@@ -136,16 +134,14 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                   WeatherParameter(
                                     parameterName: "Pressure", 
                                     parameterValue: '${weatherData?.pressure} hPa',
-                                    onTap: () {
-                                      print("dslajf");
-                                    },
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                   WeatherParameter(
                                     parameterName: "Wind speed", 
                                     parameterValue: '${weatherData?.windSpeed} m/s',
-                                    onTap: () {
-                                      print("dlsakjf");
-                                    }
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                 ],
                               ),
@@ -156,17 +152,15 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                   WeatherParameter(
                                     parameterName: "Sunrise", 
                                     parameterValue: DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(weatherData!.sunRise! * 1000).toLocal()),
-                                    onTap: () {
-                                      print('${weatherData?.sunRise}');
-                                    },
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                     bottomText: 'Sunset ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(weatherData!.sunSet! * 1000).toLocal())}',
                                   ),
                                   WeatherParameter(
                                     parameterName: "Visibility", 
                                     parameterValue: '${weatherData?.visibility} m',
-                                    onTap: () {
-                                      print("dlsakjf");
-                                    }
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                 ],
                               ),
@@ -176,17 +170,15 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                 children: [
                                   WeatherParameter(
                                     parameterName: "Rain", 
-                                    parameterValue: '${weatherData?.rain} mm',
-                                    onTap: () {
-                                      print("dslajf");
-                                    },
+                                    parameterValue: '${weatherData?.rain ?? 0} mm',
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                   WeatherParameter(
                                     parameterName: "Clouds", 
                                     parameterValue: '${weatherData?.clouds} %',
-                                    onTap: () {
-                                      print("dlsakjf");
-                                    }
+                                    historyData: historyData ?? [],
+                                    forecastHourlyData: forecastHourlyData ?? [],
                                   ),
                                 ],
                               )
