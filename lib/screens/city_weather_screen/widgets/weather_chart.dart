@@ -23,10 +23,9 @@ class WeatherChart extends StatelessWidget {
     double max = calculateMax(values.cast<double>(), 2);
     double interval = calculateInterval(min, max, 5);
 
-    // Round min, max, and interval values to ensure they align correctly
     min = min.roundToDouble();
     max = max.roundToDouble();
-    interval = (interval / 1).roundToDouble(); // Ensure interval is rounded
+    interval = (interval / 1).roundToDouble();
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -75,6 +74,10 @@ class WeatherChart extends StatelessWidget {
                 colors: [Colors.blue, Colors.lightBlueAccent],
               ),
               barWidth: 2,
+              belowBarData: BarAreaData(
+                show: true,
+                color: Colors.blue.withOpacity(0.2),
+                ),
             ),
           ],
           lineTouchData: LineTouchData(
@@ -159,6 +162,8 @@ class WeatherChart extends StatelessWidget {
         return data.clouds.toDouble();
       case 'rain':
         return data.rain.toDouble() ?? 0.0;
+      case 'wind speed':
+        return data.windSpeed.toDouble();
       default:
         if (data is CityHistoryModel) {
           return data.temp - 273.15;

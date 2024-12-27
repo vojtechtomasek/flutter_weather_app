@@ -7,6 +7,7 @@ import 'package:weather/routes/app_router.dart';
 import '../../models/city_forecast_hourly_model.dart';
 import '../../models/city_weather_model.dart';
 import '../../services/api_service.dart';
+import '../../utils/wind_direction.dart';
 import 'widgets/ten_day_forecast.dart';
 import 'widgets/weather_parameter.dart';
 import 'widgets/forecast_list.dart';
@@ -142,6 +143,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                     parameterValue: '${weatherData?.windSpeed} m/s',
                                     historyData: historyData ?? [],
                                     forecastHourlyData: forecastHourlyData ?? [],
+                                    bottomText: 'Wind direction: ${getWindDirection(weatherData?.windDeg ?? 0)}',
                                   ),
                                 ],
                               ),
@@ -155,12 +157,14 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                                     historyData: historyData ?? [],
                                     forecastHourlyData: forecastHourlyData ?? [],
                                     bottomText: 'Sunset ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(weatherData!.sunSet! * 1000).toLocal())}',
+                                    showGraph: false,
                                   ),
                                   WeatherParameter(
                                     parameterName: "Visibility", 
                                     parameterValue: '${weatherData?.visibility} m',
                                     historyData: historyData ?? [],
                                     forecastHourlyData: forecastHourlyData ?? [],
+                                    showGraph: false,
                                   ),
                                 ],
                               ),

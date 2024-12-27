@@ -10,6 +10,7 @@ class WeatherParameter extends StatelessWidget {
   final String? bottomText;
   final List<CityHistoryModel> historyData;
   final List<CityForecastHourlyModel> forecastHourlyData;
+  final bool showGraph;
 
   const WeatherParameter({
     super.key,
@@ -19,6 +20,7 @@ class WeatherParameter extends StatelessWidget {
     required this.forecastHourlyData,
     this.onTap,
     this.bottomText,
+    this.showGraph = true,
   });
 
   @override
@@ -27,6 +29,7 @@ class WeatherParameter extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.47,
       child: InkWell(
         onTap: () {
+          if (!showGraph) return;
           showModalBottomSheet(
             context: context,
             builder: (context) {

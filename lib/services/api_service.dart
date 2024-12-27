@@ -142,6 +142,7 @@ class ApiService {
           humidity: (historyData['main']['humidity'] as num).toInt(),
           clouds: (historyData['clouds']['all'] as num).toInt(),
           rain: (historyData['rain']?['1h'] as num?)?.toDouble() ?? 0.0,
+          windSpeed: (historyData['wind']['speed'] as num).toDouble(),
         )).toList();
       } catch (e) {
         print('Error parsing history data: $e');

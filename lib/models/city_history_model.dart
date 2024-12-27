@@ -6,6 +6,7 @@ class CityHistoryModel {
   final int humidity;
   final int clouds;
   final double? rain;
+  final double windSpeed;
 
   CityHistoryModel({
     required this.dt, 
@@ -15,5 +16,6 @@ class CityHistoryModel {
     required this.humidity,
     required this.clouds,
     required this.rain,
+    required this.windSpeed,
   });
 }
