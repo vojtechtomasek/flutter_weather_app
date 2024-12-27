@@ -1,17 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:weather/models/city_forecast_daily_model.dart';
+import 'package:weather/models/city_history_model.dart';
 import 'package:weather/routes/app_router.dart';
-import '../../models/city_forecast_model.dart';
-import '../../models/city_model.dart';
+import '../../models/city_forecast_hourly_model.dart';
+import '../../models/city_weather_model.dart';
 import '../../services/api_service.dart';
-import 'widgets/five_day_forecast.dart';
+import 'widgets/ten_day_forecast.dart';
 import 'widgets/weather_parameter.dart';
 import 'widgets/forecast_list.dart';
 
 @RoutePage()
 class CityWeatherScreen extends StatefulWidget {
-  final City city;
+  final CityWeatherModel city;
 
   const CityWeatherScreen({super.key, required this.city});
 
@@ -20,8 +22,10 @@ class CityWeatherScreen extends StatefulWidget {
 }
 
 class _CityWeatherScreenState extends State<CityWeatherScreen> {
-  City? weatherData;
-  List<CityForecast>? forecastData;
+  CityWeatherModel? weatherData;
+  List<CityForecastHourlyModel>? forecastHourlyData;
+  List<CityForecastDailyModel>? forecastDailyData;
+  List<CityHistoryModel>? historyData;
   bool isLoading = true;
 
   @override
@@ -37,18 +41,23 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
     
     final coordinates = await ApiService.getCityWithCoordinates(widget.city.name);
     if (coordinates != null) {
-      final weather = await ApiService.fetchWeatherData(
-        coordinates.$1,
-        coordinates.$2
-      );
-      final forecast = await ApiService.fetchForecastData(
-        coordinates.$1,
-        coordinates.$2
-      );
-      
+      final weatherFuture = ApiService.fetchWeatherData(coordinates.$1, coordinates.$2);
+      final forecastHourlyFuture = ApiService.fetchForecastHourlyData(coordinates.$1, coordinates.$2);
+      final forecastDailyFuture = ApiService.fetchForecastDailyData(coordinates.$1, coordinates.$2);
+      final historyFuture = ApiService.fetchHistoryData(coordinates.$1, coordinates.$2);
+
+      final results = await Future.wait([
+        weatherFuture,
+        forecastHourlyFuture,
+        forecastDailyFuture,
+        historyFuture,
+      ]);
+
       setState(() {
-        weatherData = weather;
-        forecastData = forecast;
+        weatherData = results[0] as CityWeatherModel?;
+        forecastHourlyData = results[1] as List<CityForecastHourlyModel>?;
+        forecastDailyData = results[2] as List<CityForecastDailyModel>?;
+        historyData = results[3] as List<CityHistoryModel>?;
         isLoading = false;
       });
     }
@@ -85,15 +94,18 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                           ],
                         ),
                         const SizedBox(height: 40),
+
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: forecastData != null
-                            ? ForecastList(forecastData: forecastData!)
+                          child: forecastHourlyData != null
+                            ? ForecastList(forecastHourlyData: forecastHourlyData!)
                             : const Text('No forecast data available'),
                         ),
                         const SizedBox(height: 10),
-                        FiveDayForecast(forecastData: forecastData),
+
+                        TenDayForecast(forecastData: forecastDailyData),
                         const SizedBox(height: 10),
+
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(

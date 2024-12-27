@@ -1,4 +1,4 @@
-class CityForecast {
+class CityForecastHourlyModel {
   final int dt;
   final String dtTxt;
   final double temp;
@@ -12,7 +12,7 @@ class CityForecast {
   final int visibility;
   final int clouds;
 
-  CityForecast({
+  CityForecastHourlyModel({
     required this.dt,
     required this.dtTxt,
     required this.temp,

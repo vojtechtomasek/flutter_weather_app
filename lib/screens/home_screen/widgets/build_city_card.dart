@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:weather/models/city_model.dart';
+import 'package:weather/models/city_weather_model.dart';
 import 'package:weather/routes/app_router.dart';
 
-Widget buildCityCard(BuildContext context, City city) {
+Widget buildCityCard(BuildContext context, CityWeatherModel city) {
     return Card(
       margin: const EdgeInsets.all(10.0),
       child: ListTile(

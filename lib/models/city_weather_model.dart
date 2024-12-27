@@ -1,5 +1,5 @@
-class City {
-  static final List<City> cities = [];
+class CityWeatherModel {
+  static final List<CityWeatherModel> cities = [];
 
   final String name;
   final String? country;
@@ -21,7 +21,7 @@ class City {
   final int? clouds;
   final int? visibility;
 
-  City({
+  CityWeatherModel({
     required this.name, 
     this.country,
     this.temp, 
@@ -43,7 +43,7 @@ class City {
     this.visibility,
   });
 
-  static void addCity(City city) {
+  static void addCity(CityWeatherModel city) {
     cities.add(city);
   }
 }

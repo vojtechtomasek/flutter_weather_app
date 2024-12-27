@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/routes/app_router.dart';
-import '../models/city_model.dart';
+import '../models/city_weather_model.dart';
 
 @RoutePage()
 class InputScreen extends StatelessWidget {
@@ -30,8 +30,8 @@ class InputScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   final cityName = _controller.text;
-                  final city = City(name: cityName);
-                  City.addCity(city);
+                  final city = CityWeatherModel(name: cityName);
+                  CityWeatherModel.addCity(city);
                   context.router.push(CityWeatherRoute(city: city));
                 },
                 child: const Text('Search'),

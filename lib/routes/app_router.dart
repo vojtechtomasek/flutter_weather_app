@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:weather/models/city_model.dart';
+import 'package:weather/models/city_weather_model.dart';
 import 'package:flutter/material.dart';
 import '../screens/home_screen/home_screen.dart';
 import '../screens/input_screen.dart';

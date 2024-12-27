@@ -14,7 +14,7 @@ part of 'app_router.dart';
 class CityWeatherRoute extends PageRouteInfo<CityWeatherRouteArgs> {
   CityWeatherRoute({
     Key? key,
-    required City city,
+    required CityWeatherModel city,
     List<PageRouteInfo>? children,
   }) : super(
           CityWeatherRoute.name,
@@ -47,7 +47,7 @@ class CityWeatherRouteArgs {
 
   final Key? key;
 
-  final City city;
+  final CityWeatherModel city;
 
   @override
   String toString() {

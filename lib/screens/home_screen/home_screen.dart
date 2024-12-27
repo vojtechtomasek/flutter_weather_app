@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:weather/models/city_model.dart';
+import 'package:weather/models/city_weather_model.dart';
 import 'package:weather/routes/app_router.dart';
 import 'widgets/build_city_card.dart';
 
@@ -13,14 +13,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _cityCount = City.cities.length;
+  int _cityCount = CityWeatherModel.cities.length;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_cityCount != City.cities.length) {
+    if (_cityCount != CityWeatherModel.cities.length) {
       setState(() {
-        _cityCount = City.cities.length;
+        _cityCount = CityWeatherModel.cities.length;
       });
     }
   }
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: ListView(
-              children: City.cities.map((city) => buildCityCard(context, city)).toList(),
+              children: CityWeatherModel.cities.map((city) => buildCityCard(context, city)).toList(),
             ),
           ),
           Center(
