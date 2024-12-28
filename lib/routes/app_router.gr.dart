@@ -95,10 +95,19 @@ class InputRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [MapScreen]
-class MapRoute extends PageRouteInfo<void> {
-  const MapRoute({List<PageRouteInfo>? children})
-      : super(
+class MapRoute extends PageRouteInfo<MapRouteArgs> {
+  MapRoute({
+    Key? key,
+    required double lat,
+    required double lon,
+    List<PageRouteInfo>? children,
+  }) : super(
           MapRoute.name,
+          args: MapRouteArgs(
+            key: key,
+            lat: lat,
+            lon: lon,
+          ),
           initialChildren: children,
         );
 
@@ -107,7 +116,31 @@ class MapRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const MapScreen();
+      final args = data.argsAs<MapRouteArgs>();
+      return MapScreen(
+        key: args.key,
+        lat: args.lat,
+        lon: args.lon,
+      );
     },
   );
+}
+
+class MapRouteArgs {
+  const MapRouteArgs({
+    this.key,
+    required this.lat,
+    required this.lon,
+  });
+
+  final Key? key;
+
+  final double lat;
+
+  final double lon;
+
+  @override
+  String toString() {
+    return 'MapRouteArgs{key: $key, lat: $lat, lon: $lon}';
+  }
 }

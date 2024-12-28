@@ -204,7 +204,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                       elevation: 0,
                       child: const Icon(Icons.map, color: Colors.black),
                       onPressed: () {
-                        context.router.push(const MapRoute());
+                        context.router.push(MapRoute(lat: weatherData?.lat ?? 0.0, lon: weatherData?.lon ?? 0.0));
                       },
                     ),
                     FloatingActionButton(
