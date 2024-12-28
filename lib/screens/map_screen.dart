@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:auto_route/auto_route.dart';
+
+import '../utils/map_constants.dart';
 
 @RoutePage()
 class MapScreen extends StatefulWidget {
@@ -19,11 +22,35 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  String _currentLayer = 'PAC0';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OpenStreetMap'),
+        title: Text(weatherOperations[_currentLayer] ?? 'Map'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.layers),
+              iconSize: 30,
+              onSelected: (String value) {
+                setState(() {
+                  _currentLayer = value;
+                });
+              },
+              itemBuilder: (BuildContext context) {
+                return weatherOperations.entries.map((entry) {
+                  return PopupMenuItem<String>(
+                    value: entry.key,
+                    child: Text(entry.value),
+                  );
+                }).toList();
+              },
+            ),
+          ),
+        ],
       ),
       body: FlutterMap(
         options: MapOptions(
@@ -32,21 +59,16 @@ class _MapScreenState extends State<MapScreen> {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            additionalOptions: const {
+              'tileSize': '256',
+            },
           ),
-          const MarkerLayer(
-            markers: [
-              Marker(
-                point: LatLng(37.7749, -122.4194),
-                width: 80.0,
-                height: 80.0,
-                child: Icon(
-                  Icons.location_pin,
-                  color: Colors.red,
-                  size: 40,
-                ),
-              ),
-            ],
+          TileLayer(
+            urlTemplate: 'http://maps.openweathermap.org/maps/2.0/weather/$_currentLayer/{z}/{x}/{y}?appid=${dotenv.env['OPENWEATHER_API_KEY']}',
+            additionalOptions: const {
+              'tileSize': '256',
+            },
           ),
         ],
       ),
