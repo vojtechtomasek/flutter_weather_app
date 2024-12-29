@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:weather/models/city_forecast_daily_model.dart';
 import 'package:weather/models/city_history_model.dart';
 import 'package:weather/routes/app_router.dart';
+import 'package:weather/screens/city_weather_screen/widgets/weather_overview.dart';
+import 'package:weather/utils/weather_data_loader.dart';
 import '../../models/city_forecast_hourly_model.dart';
 import '../../models/city_weather_model.dart';
-import '../../services/api_service.dart';
 import '../../utils/wind_direction.dart';
 import 'widgets/ten_day_forecast.dart';
 import 'widgets/weather_parameter.dart';
@@ -39,29 +40,16 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
     setState(() {
       isLoading = true;
     });
-    
-    final coordinates = await ApiService.getCityWithCoordinates(widget.city.name);
-    if (coordinates != null) {
-      final weatherFuture = ApiService.fetchWeatherData(coordinates.$1, coordinates.$2);
-      final forecastHourlyFuture = ApiService.fetchForecastHourlyData(coordinates.$1, coordinates.$2);
-      final forecastDailyFuture = ApiService.fetchForecastDailyData(coordinates.$1, coordinates.$2);
-      final historyFuture = ApiService.fetchHistoryData(coordinates.$1, coordinates.$2);
 
-      final results = await Future.wait([
-        weatherFuture,
-        forecastHourlyFuture,
-        forecastDailyFuture,
-        historyFuture,
-      ]);
+    final data = await loadWeatherData(widget.city.name);
 
-      setState(() {
-        weatherData = results[0] as CityWeatherModel?;
-        forecastHourlyData = results[1] as List<CityForecastHourlyModel>?;
-        forecastDailyData = results[2] as List<CityForecastDailyModel>?;
-        historyData = results[3] as List<CityHistoryModel>?;
-        isLoading = false;
-      });
-    }
+    setState(() {
+      weatherData = data['weatherData'] as CityWeatherModel?;
+      forecastHourlyData = data['forecastHourlyData'] as List<CityForecastHourlyModel>?;
+      forecastDailyData = data['forecastDailyData'] as List<CityForecastDailyModel>?;
+      historyData = data['historyData'] as List<CityHistoryModel>?;
+      isLoading = false;
+    });
   }
 
   @override
@@ -78,22 +66,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        Text(weatherData?.name ?? 'N/A', style: const TextStyle(fontSize: 32)),
-                        Text(
-                          weatherData?.temp != null ? '${weatherData?.temp?.round()}°' : 'N/A',
-                          style: const TextStyle(fontSize: 48),
-                        ),
-                        Text(weatherData?.weatherDescription ?? 'N/A'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.arrow_downward),
-                            Text(weatherData?.tempMin != null ? '${weatherData?.tempMin?.round()}°' : 'N/A'),
-                            const SizedBox(width: 10),
-                            const Icon(Icons.arrow_upward),
-                            Text(weatherData?.tempMax != null ? '${weatherData?.tempMax?.round()}°' : 'N/A'),
-                          ],
-                        ),
+                        WeatherOverview(weatherData: weatherData, cityName: widget.city.name),
                         const SizedBox(height: 40),
 
                         Padding(
