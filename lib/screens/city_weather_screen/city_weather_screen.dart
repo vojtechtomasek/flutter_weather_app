@@ -175,7 +175,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                     FloatingActionButton(
                       backgroundColor: Colors.transparent,
                       elevation: 0,
-                      child: const Icon(Icons.map, color: Colors.black),
+                      child: const Icon(Icons.map),
                       onPressed: () {
                         context.router.push(MapRoute(lat: weatherData?.lat ?? 0.0, lon: weatherData?.lon ?? 0.0));
                       },
@@ -183,7 +183,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                     FloatingActionButton(
                       backgroundColor: Colors.transparent,
                       elevation: 0,
-                      child: const Icon(Icons.menu, color: Colors.black),
+                      child: const Icon(Icons.menu),
                       onPressed: () {
                         context.router.replaceAll([const HomeRoute()]);
                       },

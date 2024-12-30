@@ -26,27 +26,39 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final mapUrlThemplate = isDarkMode 
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+      : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+
     return Scaffold(
       appBar: AppBar(
         title: Text(weatherOperations[_currentLayer] ?? 'Map'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: PopupMenuButton<String>(
+            child: IconButton(
               icon: const Icon(Icons.layers),
               iconSize: 30,
-              onSelected: (String value) {
-                setState(() {
-                  _currentLayer = value;
-                });
-              },
-              itemBuilder: (BuildContext context) {
-                return weatherOperations.entries.map((entry) {
-                  return PopupMenuItem<String>(
-                    value: entry.key,
-                    child: Text(entry.value),
-                  );
-                }).toList();
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ListView(
+                      children: weatherOperations.entries.map((entry) {
+                        return ListTile(
+                          title: Text(entry.value),
+                          onTap: () {
+                            setState(() {
+                              _currentLayer = entry.key;
+                            });
+                            Navigator.pop(context);
+                          },
+                        );
+                      }).toList(),
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -59,7 +71,7 @@ class _MapScreenState extends State<MapScreen> {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            urlTemplate: mapUrlThemplate,
             additionalOptions: const {
               'tileSize': '256',
             },
@@ -69,6 +81,19 @@ class _MapScreenState extends State<MapScreen> {
             additionalOptions: const {
               'tileSize': '256',
             },
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(widget.lat, widget.lon),
+                width: 50,
+                height: 50,
+                child: const Icon(
+                  Icons.location_on_outlined,
+                  size: 40,
+                ),
+              ),
+            ],
           ),
         ],
       ),

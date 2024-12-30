@@ -34,7 +34,14 @@ Widget buildCurrentLocationCard(BuildContext context, String currentLocation, bo
       child: ListTile(
         title: Text(currentLocation),
         subtitle: isFetchingLocation
-            ? const CircularProgressIndicator()
+            ? const Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator()
+                ),
+            )
             : const Text('Tap to see weather'),
         leading: const Icon(Icons.location_on),
       ),

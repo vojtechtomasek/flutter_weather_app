@@ -43,6 +43,30 @@ class CityWeatherModel {
     this.visibility,
   });
 
+  factory CityWeatherModel.fromJson(Map<String, dynamic> data, double lat, double lon) {
+    return CityWeatherModel(
+      name: data['name'] ?? '',
+      temp: (data['main']['temp'] as num).toDouble(),
+      feelsLike: (data['main']['feels_like'] as num).toDouble(),
+      tempMin: (data['main']['temp_min'] as num).toDouble(),
+      tempMax: (data['main']['temp_max'] as num).toDouble(),
+      pressure: (data['main']['pressure'] as num).toInt(),
+      humidity: (data['main']['humidity'] as num).toInt(),
+      weatherDescription: data['weather'][0]['description'] as String,
+      windSpeed: (data['wind']['speed'] as num).toDouble(),
+      windDeg: (data['wind']?['deg'] as num?)?.toInt(),
+      windGust: (data['wind']?['gust'] as num?)?.toDouble(),
+      lat: lat,
+      lon: lon,
+      country: data['sys']['country'] as String,
+      sunRise: data['sys']['sunrise'] as int,
+      sunSet: data['sys']['sunset'] as int,
+      rain: (data['rain']?['1h'] as num?)?.toDouble() ?? 0.0,
+      clouds: (data['clouds']?['all'] as num?)?.toInt(),
+      visibility: (data['visibility'] as num?)?.toInt(),  
+    );
+  }
+
   static void addCity(CityWeatherModel city) {
     cities.add(city);
   }

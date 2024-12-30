@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
-              child: const Icon(Icons.search, color: Colors.black),
+              child: const Icon(Icons.search),
             ),
           ),
           const SizedBox(height: 20),

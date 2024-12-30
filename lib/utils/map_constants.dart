@@ -11,7 +11,7 @@ const Map<String, String> weatherOperations = {
   'TA2': 'Air Temperature at 2m',
   'TD2': 'Dew Point Temperature',
   'TS0': 'Soil Temperature 0-10cm',
-  'TS10': 'Soil Temperature >10cm',
+  'TS10': 'Soil Temperature > 10cm',
   'HRD0': 'Relative Humidity',
   'CL': 'Cloudiness',
 };

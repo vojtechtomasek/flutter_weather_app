@@ -27,6 +27,8 @@ class WeatherChart extends StatelessWidget {
     max = max.roundToDouble();
     interval = (interval / 1).roundToDouble();
 
+    final now = DateTime.now().hour;
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: LineChart(
@@ -67,17 +69,30 @@ class WeatherChart extends StatelessWidget {
               spots: values
                   .asMap()
                   .entries
-                  .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
+                  .map((entry) {
+                    final spot = FlSpot(entry.key.toDouble(), entry.value);
+                    return spot;
+                  })
                   .toList(),
-              isCurved: true,
-              gradient: const LinearGradient(
-                colors: [Colors.blue, Colors.lightBlueAccent],
-              ),
+              isCurved: false,
+              // gradient: const LinearGradient(
+              //   colors: [Colors.blue, Colors.lightBlueAccent],
+              // ),
+              gradient: LinearGradient(
+                colors: const [Colors.blue, Colors.green],
+                stops: [now / 22, now / 22],
+                ),
               barWidth: 2,
               belowBarData: BarAreaData(
                 show: true,
-                color: Colors.blue.withOpacity(0.2),
-                ),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.blue.withOpacity(0.2),
+                    Colors.green.withOpacity(0.2),
+                  ],
+                  stops: [now / 22, now / 22],
+                )
+              ),
             ),
           ],
           lineTouchData: LineTouchData(
