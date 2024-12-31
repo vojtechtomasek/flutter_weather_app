@@ -32,17 +32,17 @@ class CityForecastHourlyModel {
   factory CityForecastHourlyModel.fromJson(Map<String, dynamic> forecastData) {
     return CityForecastHourlyModel(
       dt: forecastData['dt'],
-      dtTxt: forecastData['dt_txt'],
-      temp: (forecastData['main']['temp'] as num).toDouble(),
-      feelsLike: (forecastData['main']['feels_like'] as num).toDouble(),
-      tempMin: (forecastData['main']['temp_min'] as num).toDouble(),
-      tempMax: (forecastData['main']['temp_max'] as num).toDouble(),
-      pressure: (forecastData['main']['pressure'] as num).toInt(),
-      humidity: (forecastData['main']['humidity'] as num).toInt(),
-      weatherDescription: forecastData['weather'][0]['description'],
-      windSpeed: (forecastData['wind']['speed'] as num).toDouble(),
-      visibility: (forecastData['visibility'] as num).toInt(),
-      clouds: (forecastData['clouds']['all'] as num).toInt(),
+      dtTxt: forecastData['dt_txt'] ?? '',
+      temp: (forecastData['main']['temp'] as num?)?.toDouble() ?? 0.0,
+      feelsLike: (forecastData['main']['feels_like'] as num?)?.toDouble() ?? 0.0,
+      tempMin: (forecastData['main']['temp_min'] as num?)?.toDouble() ?? 0.0,
+      tempMax: (forecastData['main']['temp_max'] as num?)?.toDouble() ?? 0.0,
+      pressure: (forecastData['main']['pressure'] as num?)?.toInt() ?? 0,
+      humidity: (forecastData['main']['humidity'] as num?)?.toInt() ?? 0,
+      weatherDescription: forecastData['weather'][0]['description'] ?? '',
+      windSpeed: (forecastData['wind']['speed'] as num?)?.toDouble() ?? 0.0,
+      visibility: (forecastData['visibility'] as num?)?.toInt() ?? 0,
+      clouds: (forecastData['clouds']['all'] as num?)?.toInt() ?? 0,
       rain: (forecastData['rain']?['3h'] as num?)?.toDouble() ?? 0.0,
     );
   }

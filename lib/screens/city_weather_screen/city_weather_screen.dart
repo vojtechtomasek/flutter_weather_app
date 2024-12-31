@@ -173,6 +173,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     FloatingActionButton(
+                      heroTag: 'map',
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       child: const Icon(Icons.map),
@@ -181,6 +182,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                       },
                     ),
                     FloatingActionButton(
+                      heroTag: 'home',
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       child: const Icon(Icons.menu),

@@ -75,22 +75,19 @@ class WeatherChart extends StatelessWidget {
                   })
                   .toList(),
               isCurved: false,
-              // gradient: const LinearGradient(
-              //   colors: [Colors.blue, Colors.lightBlueAccent],
-              // ),
               gradient: LinearGradient(
-                colors: const [Colors.blue, Colors.green],
-                stops: [now / 22, now / 22],
+                colors: const [Colors.blueGrey, Colors.blue],
+                stops: [now / (values.length - 1), now / (values.length - 1)],
                 ),
               barWidth: 2,
               belowBarData: BarAreaData(
                 show: true,
                 gradient: LinearGradient(
                   colors: [
+                    Colors.blueGrey.withOpacity(0.2),
                     Colors.blue.withOpacity(0.2),
-                    Colors.green.withOpacity(0.2),
                   ],
-                  stops: [now / 22, now / 22],
+                  stops: [now / (values.length-1), now / (values.length-1)],
                 )
               ),
             ),
@@ -98,7 +95,7 @@ class WeatherChart extends StatelessWidget {
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 8,
-              getTooltipColor: (touchedSpot) => Colors.blue,
+              getTooltipColor: (touchedSpot) => Colors.grey[850] ?? Colors.black,
               getTooltipItems: (touchedSpots) {
                 return touchedSpots.map((spot) {
                   return LineTooltipItem(
@@ -108,14 +105,14 @@ class WeatherChart extends StatelessWidget {
                       TextSpan(
                         text: '${spot.x.toStringAsFixed(2)}\n',
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 10,
                         ),
                       ),
                       TextSpan(
                         text: spot.y.toStringAsFixed(2),
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
@@ -125,6 +122,26 @@ class WeatherChart extends StatelessWidget {
                 }).toList();
               },
             ),
+            getTouchedSpotIndicator: (LineChartBarData barData, List<int> spotIndexes) {
+              return spotIndexes.map((spotIndex) {
+                return TouchedSpotIndicatorData(
+                  FlLine(
+                    color: Colors.blue.withOpacity(0.2),
+                    strokeWidth: 4,
+                    dashArray: [8, 4],
+                  ),
+                  FlDotData(
+                    show: true,
+                    getDotPainter: (spot, percent, barData, index) {
+                      return FlDotCirclePainter(
+                        radius: 8,
+                        color: Colors.blue,
+                      );
+                    },
+                  ),
+                );
+              }).toList();
+            },
           ),
         ),
       ),
@@ -148,10 +165,10 @@ class WeatherChart extends StatelessWidget {
       }
     }
 
-    // Add forecast hourly data
+    // Add forecast data
     for (var data in forecastHourlyData) {
       final dateTime = DateTime.fromMillisecondsSinceEpoch(data.dt * 1000);
-      if (dateTime.isAfter(startOfDay) && dateTime.isBefore(endOfDay)) {
+      if (dateTime.isAfter(startOfDay) && dateTime.isBefore(endOfDay.add(const Duration(hours: 1)))) {
         combinedData.add({
           'time': dateTime,
           'value': _getParameterValue(data),
