@@ -4,10 +4,11 @@ import 'package:weather/services/location_service.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:weather/routes/app_router.dart';
 import 'widgets/build_city_card.dart';
+import 'package:weather/utils/shared_preferences_util.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -29,6 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+    _loadScreenState();
+  }
+
   Future<void> _getCurrentLocation() async {
     setState(() {
       isFetchingLocation = true;
@@ -47,10 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
+ Future<void> _loadScreenState() async {
+    final lastScreen = await SharedPreferencesUtil.loadScreenState();
+    final lastCityName = await SharedPreferencesUtil.loadCity();
+    if (lastScreen == 'weather' && lastCityName != null) {
+      final lastCity = CityWeatherModel.cities.firstWhere((city) => city.name == lastCityName);
+      if (mounted) {
+        context.router.replace(CityWeatherRoute(city: lastCity));
+      }
+    }
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:weather/screens/city_weather_screen/widgets/weather_overview.dar
 import 'package:weather/utils/weather_data_loader.dart';
 import '../../models/city_forecast_hourly_model.dart';
 import '../../models/city_weather_model.dart';
+import '../../utils/shared_preferences_util.dart';
 import '../../utils/wind_direction.dart';
 import 'widgets/ten_day_forecast.dart';
 import 'widgets/weather_parameter.dart';
@@ -34,6 +35,8 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
   void initState() {
     super.initState();
     _loadCityData();
+    SharedPreferencesUtil.saveScreenState('weather');
+    SharedPreferencesUtil.saveCity(widget.city.name);
   }
 
   Future<void> _loadCityData() async {
@@ -50,6 +53,10 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
       historyData = data['historyData'] as List<CityHistoryModel>?;
       isLoading = false;
     });
+  }
+
+  Future<void> _clearScreenState() async {
+    await SharedPreferencesUtil.clearScreenState();
   }
 
   @override
@@ -187,6 +194,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                       elevation: 0,
                       child: const Icon(Icons.menu),
                       onPressed: () {
+                        _clearScreenState();
                         context.router.replaceAll([const HomeRoute()]);
                       },
                     ),
