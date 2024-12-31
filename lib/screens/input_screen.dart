@@ -1,15 +1,14 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:weather/routes/app_router.dart';
-import '../models/city_weather_model.dart';
+import 'package:auto_route/auto_route.dart';
+import '../services/navigation_service.dart';
 
 @RoutePage()
 class InputScreen extends StatelessWidget {
-  const InputScreen({super.key});
+  const InputScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _controller = TextEditingController();
+    final TextEditingController controller = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -20,7 +19,7 @@ class InputScreen extends StatelessWidget {
         child: Column(
           children: [
             TextField(
-              controller: _controller,
+              controller: controller,
               decoration: const InputDecoration(
                 labelText: 'Enter city name',
               ),
@@ -29,10 +28,7 @@ class InputScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  final cityName = _controller.text;
-                  final city = CityWeatherModel(name: cityName);
-                  CityWeatherModel.addCity(city);
-                  context.router.push(CityWeatherRoute(city: city));
+                  NavigationService.fetchAndNavigate(context, controller.text);
                 },
                 child: const Text('Search'),
               ),

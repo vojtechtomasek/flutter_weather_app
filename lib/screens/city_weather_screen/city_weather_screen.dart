@@ -66,7 +66,7 @@ class _CityWeatherScreenState extends State<CityWeatherScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        WeatherOverview(weatherData: weatherData, cityName: widget.city.name),
+                        WeatherOverview(weatherData: weatherData),
                         const SizedBox(height: 40),
 
                         Padding(

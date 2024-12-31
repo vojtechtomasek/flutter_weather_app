@@ -3,15 +3,14 @@ import 'package:weather/models/city_weather_model.dart';
 
 class WeatherOverview extends StatelessWidget {
   final CityWeatherModel? weatherData;
-  final String cityName;
 
-  const WeatherOverview({super.key, required this.weatherData, required this.cityName});
+  const WeatherOverview({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(cityName, style: const TextStyle(fontSize: 32)),
+        Text(weatherData!.name, style: const TextStyle(fontSize: 32)),
         Text(
           weatherData?.temp != null ? '${weatherData?.temp?.round()}°' : 'N/A',
           style: const TextStyle(fontSize: 48),

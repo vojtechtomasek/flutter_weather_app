@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:weather/routes/app_router.dart';
 import 'widgets/build_city_card.dart';
 
+@RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
